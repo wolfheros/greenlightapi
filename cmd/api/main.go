@@ -28,7 +28,7 @@ func main() {
 	var cfg config
 
 	flag.IntVar(&cfg.port, "port", 4000, "API server port")
-	flag.StringVar(&cfg.env, "env", "development", "Enviroment (development|staging|production)")
+	flag.StringVar(&cfg.env, "env", "development", "Enviroment(development|staging|production)")
 	flag.Parse()
 
 	//Initial a structed logger which write log entries to the standard out steam.
