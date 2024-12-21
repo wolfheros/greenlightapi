@@ -9,6 +9,9 @@ import (
 	"github.com/julienschmidt/httprouter"
 )
 
+// Define an envelope type for enveloping the data result.
+type envelope map[string]any
+
 // Retrieve the [id] URL parameter from current [Request Context}.
 // all the parameters in request has been store in [Request Context]
 // during the routing stage by [httprouter] frmaework
@@ -28,9 +31,12 @@ func (app *application) readIDParam(r *http.Request) (int64, error) {
 // This method is use for sending json as response, it used parameters:
 // [http.ResponseWriter], [HTTP status], [data] and [header map]
 
-func (app *application) writeJSON(w http.ResponseWriter, status int, data any, headers http.Header) error {
-	// covert to json
-	js, err := json.Marshal(data)
+func (app *application) writeJSON(w http.ResponseWriter, status int, data envelope, headers http.Header) error {
+	// covert to json, use [json.MarshalIndent()]
+	// function add whitespace to the output, use for each element
+	// noline prefix [""]
+	// table indents ["\t"]
+	js, err := json.MarshalIndent(data, "", "\t")
 	if err != nil {
 		return err
 	}

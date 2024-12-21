@@ -3,6 +3,9 @@ package main
 import (
 	"fmt"
 	"net/http"
+	"time"
+
+	"greenlight.wolfheros.com/internal/data"
 )
 
 // create movie handler
@@ -20,5 +23,21 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 		http.NotFound(w, r)
 	}
 
-	fmt.Fprintf(w, "show the details of movie %d\n", id)
+	// create a [Movies] struct instance, contain some dummy data
+	movie := data.Movie{
+		ID:        id,
+		CreatedAt: time.Now(),
+		Title:     "Casablance",
+		Runtime:   102,
+		Genres:    []string{"drama", "romance", "war"},
+		Version:   1,
+	}
+
+	err = app.writeJSON(w, http.StatusOK, envelope{"movie": movie}, nil)
+	if err != nil {
+		app.logger.Error(err.Error())
+		http.Error(w, "The server encouted a problem and could not process your request", http.StatusInternalServerError)
+	}
+
+	// fmt.Fprintf(w, "show the details of movie %d\n", id)
 }

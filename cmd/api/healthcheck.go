@@ -11,10 +11,12 @@ func (app *application) healthcheckHandler(w http.ResponseWriter, r *http.Reques
 	// so that include double-quotes characters in the JSON without needing to escape it
 
 	// Creating a [map[string]string] which hold the [JSON] string
-	data := map[string]string{
-		"status":      "available",
-		"environment": app.config.env,
-		"version":     version,
+	data := envelope{
+		"status": "available",
+		"system_info": map[string]string{
+			"environment": app.config.env,
+			"version":     version,
+		},
 	}
 
 	err := app.writeJSON(w, http.StatusOK, data, nil)
