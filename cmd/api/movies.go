@@ -20,7 +20,9 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 	// get [id] param from it
 	id, err := app.readIDParam(r)
 	if err != nil {
-		http.NotFound(w, r)
+		// http.NotFound(w, r)
+		app.notFoundResponse(w, r)
+		return
 	}
 
 	// create a [Movies] struct instance, contain some dummy data
@@ -35,8 +37,9 @@ func (app *application) showMovieHandler(w http.ResponseWriter, r *http.Request)
 
 	err = app.writeJSON(w, http.StatusOK, envelope{"movie": movie}, nil)
 	if err != nil {
-		app.logger.Error(err.Error())
-		http.Error(w, "The server encouted a problem and could not process your request", http.StatusInternalServerError)
+		// app.logger.Error(err.Error())
+		// http.Error(w, "The server encouted a problem and could not process your request", http.StatusInternalServerError)
+		app.serverErrorResponse(w, r, err)
 	}
 
 	// fmt.Fprintf(w, "show the details of movie %d\n", id)
