@@ -18,10 +18,10 @@ The [Movies] struct is store data like this:
 		"version": 1
 	}
 
-**
+** 
 */
 type Movie struct {
-	ID        int64     `json:"id"`
+	ID        int64     `json:"id"` // struct tags
 	CreatedAt time.Time `json:"-"` // use [-] (hyphen) to remove from the result
 	Title     string    `json:"title"`
 	Year      int32     `json:"year,omitempty"` // Add the omitempty directive to remove the value while its [empty], [nil] or [""]

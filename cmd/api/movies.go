@@ -11,7 +11,36 @@ import (
 // create movie handler
 // response to [POST /v1/movies] endpoint
 func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Request) {
-	fmt.Fprintln(w, "create a new movie")
+	
+	// Declare a anonymous struct hold the information from client request body
+	// The struct will be the [target decode destination]
+	// 
+	var input struct{
+		Title string `json:"title"` // struct tags
+		Year int32 `json:"year"`
+		Runtime data.Runtime `json:"runtime"`
+		Genres []string `json:"genres"`
+	}
+
+	// Old version:
+	// Initialize a new [json.Decoder] instance which reads from the request body
+	// Using [Decode()] method to decode the body contents into the struct.
+	// Send back [400 Bad Request] if there are error happened during decoding
+	// Passing [input] pointer to the [Decode()] method as target decode destination
+	// err:= json.NewDecoder(r.Body).Decode(&input)
+	
+	// New version:
+	// Decode the result to anonymous struct
+	err:=app.readJSON(w, r, &input)
+	if err!=nil {
+		// app.errorResponse(w, r, http.StatusBadRequest, err.Error())
+		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	// Dumping the contents of the input struct in a http response
+	// fmt.Fprintln(w, "create a new movie")
+	fmt.Fprintf(w, "%+v\n", input)
 }
 
 // show movie handler
