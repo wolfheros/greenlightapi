@@ -6,6 +6,7 @@ import (
 	"time"
 
 	"greenlight.wolfheros.com/internal/data"
+	"greenlight.wolfheros.com/internal/validator"
 )
 
 // create movie handler
@@ -19,7 +20,7 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 		Title string `json:"title"` // struct tags
 		Year int32 `json:"year"`
 		Runtime data.Runtime `json:"runtime"`
-		Genres []string `json:"genres"`
+		Genres []string `json:"genres"`	// slice
 	}
 
 	// Old version:
@@ -35,6 +36,22 @@ func (app *application) createMovieHandler(w http.ResponseWriter, r *http.Reques
 	if err!=nil {
 		// app.errorResponse(w, r, http.StatusBadRequest, err.Error())
 		app.badRequestResponse(w, r, err)
+		return
+	}
+
+	movie:= &data.Movie{
+		Title: input.Title,
+		Year: input.Year,
+		Runtime: input.Runtime,
+		Genres: input.Genres,
+	}
+
+	// Initialize a new Validator instance to verify the client import
+	v:=validator.New()
+
+	// At the end check is there any failed validation by checking validator instance
+	if data.ValidateMovie(v, movie); !v.Valid() {
+		app.failedValidationResponse(w,r,v.Errors)
 		return
 	}
 
