@@ -1,7 +1,9 @@
 package data
 
 import (
+	"database/sql"
 	"time"
+
 	"greenlight.wolfheros.com/internal/validator"
 )
 
@@ -33,6 +35,11 @@ type Movie struct {
 	Version   int32     `json:"version"`          	//version start as 1 will increase based on the update operation
 }
 
+// Define movie models struct to store DB config
+type MovieModel struct{
+	DB *sql.DB
+}
+
 
 
 // Using [Check()] method to execute each different verification
@@ -50,4 +57,22 @@ func ValidateMovie(v *validator.Validator, movie *Movie){
 	// check genres value
 	v.Check(movie.Genres != nil && len(movie.Genres) >=1 && len(movie.Genres) <= 5, "genres" , "Must be provided and at least 1 genres less than 5 genres")
 	v.Check(validator.Unique(movie.Genres), "genres", "Must not contain duplicate values")
+}
+
+
+// Add [CRUD] method for databse operation
+func (m MovieModel) Insert(movie *Movie) error{
+	return nil
+}
+
+func (m MovieModel) Get(id int64) error{
+	return nil
+}
+
+func (m MovieModel) Update(movie *Movie) error{
+	return nil
+}
+
+func (m MovieModel) Delete(id int64) error{
+	return nil
 }

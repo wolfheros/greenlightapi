@@ -12,6 +12,7 @@ import (
 
 	// Import the pq driver so that it can register itself with the database/sql package
 	_ "github.com/lib/pq"
+	"greenlight.wolfheros.com/internal/data"
 )
 
 const version = "1.0.0"
@@ -36,6 +37,7 @@ type config struct {
 type application struct {
 	config config
 	logger *slog.Logger
+	models data.Models
 }
 
 func main() {
@@ -72,9 +74,11 @@ func main() {
 	// Logging a message to say the connection pool has been successfully establised
 	logger.Info("database connection pool established")
 
+	//Use [data.NewModels()] function to initialize a Models struct.
 	app := &application{
 		config: cfg,
 		logger: logger,
+		models: data.NewModels(db),
 	}
 
 	//Declare a new servermux
